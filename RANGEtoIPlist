@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]
+	then
+		echo "__________________________________"
+		echo "|   Written by ProbieK           |"
+		echo "|   https://github.com/ProbieK   |"
+		echo "|________________________________|"
+		echo ""
+		echo ""
+		echo "This script will accept either a CIDR range or an IP range as an argument"
+		echo "(127.0.0.0/24 or 127.0.0.0-255)"
+		echo ""
+		echo "This script will accept the IP Range from both the command line,"
+		echo "Or from a prompt inside the script"
+		echo ""
+		echo "./RANGEtoIPlist 127.0.0.0/24"
+		echo ""
+		echo "OR"
+		echo ""
+		echo "./RANGEtoIPlist"
+		echo ">127.0.0.0/24"
+		echo ""
+		echo ""
+		echo "Use a redirect to output IP list to a file"
+		echo "./RANGEtoIPlist 127.0.0.0/24 > outputfile.txt"
+		echo ""
+		echo ""
+		echo "Must have NMap installed"
+		echo ""
+fi
+
+if [ "$#" -eq 0 ]
+	then
+		echo "Type CIDR or IP Range (127.0.0.0/24 or 127.0.0.0-255):"
+		read -p ">" RANGE
+		nmap -sL -n $RANGE | grep "Nmap scan report for " | cut -f5 -d ' '
+	else
+		nmap -sL -n $1 | grep "Nmap scan report for " | cut -f5 -d ' '
+fi
