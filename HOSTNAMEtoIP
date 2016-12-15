@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#Written by ProbieK
+#https://github.com/ProbieK
+
+function fileinput {
+	for HOST in $HOSTLIST; do
+	VAR1=$(host "$HOST" | sed $'s/^.*has address //')
+	echo "$HOST: $VAR1"
+	done
+}
+
+if [ -f "$1" ] ; then
+	HOSTLIST=$(<"$1")
+	fileinput
+elif [ $# -eq 0 ]; then
+	echo "Hostname list to find IPs for: "
+	read -p ">" USERINPUT
+		if [ -f "$USERINPUT" ] ; then
+	           HOSTLIST=$(<"$USERINPUT")
+	           fileinput
+		else
+		   host "$USERINPUT" | sed $'s/^.*has address //'
+		fi
+else
+	host "$1" | sed $'s/^.*has address //'
+fi
