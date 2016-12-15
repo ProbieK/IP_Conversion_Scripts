@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#Written by ProbieK
+#https://github.com/ProbieK/
+
+echo "IP list to find Hostnames for: "
+read -p ">" USERINPUT
+
+function alivecheck {
+                read -r -p "Print only [1]alive hosts or print [*]all hosts? " response
+                case $response in
+                        1)
+                           for IP in $IPLIST; do
+                           VAR1=$(sudo arp-scan -q $IP | tail -n +3 | head -n -3 | sed $'s/\t.*//')
+                           for VAR in $VAR1; do
+                           VARNS=$(nslookup $VAR | tail -n 2 | head -n 1 | sed $'s/^.*= //' | cut -f1 -d ".")
+                           echo "$IP: $VARNS"
+                           done
+                           done;;
+                        *)
+                           for IP in $IPLIST; do
+                           VARNS=$(nslookup $IP | tail -n 2 | head -n 1 | sed $'s/^.*= //' | cut -f1 -d ".")
+                           echo "$IP: $VARNS"
+                           done;;
+                esac
+}
+
+if [ -f $USERINPUT ] ; then
+	IPLIST=$(<$USERINPUT)
+	alivecheck
+else
+	IPLIST=$(sudo arp-scan -q $USERINPUT | tail -n +3 | head -n -3 | sed $'s/\t.*//')
+		for IP in $IPLIST; do
+			VARNS=$(nslookup $IP | tail -n 2 | head -n 1 | sed $'s/^.*= //' | cut -f1 -d ".")
+			echo "$IP: $VARNS"
+		done
+fi
