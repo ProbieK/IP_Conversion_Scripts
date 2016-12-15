@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#Written by ProbieK
+#https://github.com/ProbieK/
+
+echo "IP list to find MACs for: "
+read -p ">" USERIPLIST
+
+if [ -f $USERIPLIST ]; then
+	IPLIST=$(<$USERIPLIST)
+	for IP in $IPLIST; do
+	   sudo arp-scan -q $IP | tail -n +3 | head -n -3 # | sed $'s/^.*\t//'
+	done
+else
+	sudo arp-scan -q $USERIPLIST | tail -n +3 | head -n -3 | sed $'s/^.*\t//'
+fi
